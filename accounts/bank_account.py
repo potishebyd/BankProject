@@ -1,62 +1,11 @@
-import uuid
-import enum
-from abc import ABC, abstractmethod
-
-
-class AccountStatus(enum.Enum):
-    active = "ACTIVE"
-    frozen = "FROZEN"
-    closed = "CLOSED"
-
-
-class Currency(enum.Enum):
-    usd = "USD"
-    rub = "RUB"
-    eur = "EUR"
-    kzt = "KZT"
-    cny = "CNY"
-
-
-class AccountFrozenError(Exception):
-    pass
-
-
-class AccountClosedError(Exception):
-    pass
-
-
-class InvalidOperationError(Exception):
-    pass
-
-
-class InsufficientFundsError(Exception):
-    pass
-
-
-class AbstractAccount(ABC):
-    def __init__(
-        self,
-        owner_data: str,
-        balance: int | float = 0,
-        status: AccountStatus = AccountStatus.active,
-        account_id: str | None = None,
-    ):
-        self._account_id = account_id or uuid.uuid4().hex[:8]
-        self._owner_data = owner_data
-        self._balance = balance
-        self._status = status
-
-    @abstractmethod
-    def deposit(self, amount: int | float):
-        pass
-
-    @abstractmethod
-    def withdraw(self, amount: int | float):
-        pass
-
-    @abstractmethod
-    def get_account_info(self):
-        pass
+from .abstract_account import AbstractAccount
+from .enums import AccountStatus, Currency
+from .exceptions import (
+    AccountClosedError,
+    AccountFrozenError,
+    InsufficientFundsError,
+    InvalidOperationError,
+)
 
 
 class BankAccount(AbstractAccount):
@@ -146,36 +95,3 @@ class BankAccount(AbstractAccount):
             f"currency={self._currency.value}"
             f")"
         )
-
-
-if __name__ == "__main__":
-    # Создание активного и замороженного счетов
-    active_check = BankAccount(
-        "Sigma", 10.2, AccountStatus.active
-    )
-    frozen_check = BankAccount(
-        "Lox", 4.2, AccountStatus.frozen
-    )
-
-    # Операции над замороженным счетом
-    for operation in (
-        lambda: frozen_check.deposit(2.5),
-        lambda: frozen_check.withdraw(2.5),
-    ):
-        try:
-            operation()
-        except AccountFrozenError as error:
-            print("Error:", error)
-
-    # Валидное пополнение и снятие
-    active_check.deposit(5.5)
-    print(active_check)
-
-    active_check.withdraw(3.4)
-    print(active_check)
-
-    # Проверка недостатка средств
-    try:
-        active_check.withdraw(100)
-    except InsufficientFundsError as error:
-        print("Error:", error)
