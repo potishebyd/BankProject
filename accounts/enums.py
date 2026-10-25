@@ -7,6 +7,12 @@ class AccountStatus(enum.Enum):
     closed = "CLOSED"
 
 
+class ClientStatus(enum.Enum):
+    active = "ACTIVE"
+    blocked = "BLOCKED"
+    suspicious = "SUSPICIOUS"
+
+
 class Currency(enum.Enum):
     usd = "USD"
     rub = "RUB"

@@ -1,3 +1,5 @@
+import math
+
 from .abstract_account import AbstractAccount
 from .enums import AccountStatus, Currency
 from .exceptions import (
@@ -47,6 +49,9 @@ class BankAccount(AbstractAccount):
     @staticmethod
     def _validate_amount(amount, message="Incorrect amount"):
         if isinstance(amount, bool) or not isinstance(amount, (int, float)):
+            raise InvalidOperationError(message)
+
+        if not math.isfinite(amount):
             raise InvalidOperationError(message)
 
         if amount < 0:

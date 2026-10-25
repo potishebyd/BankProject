@@ -28,3 +28,31 @@ class TransactionLimitError(Exception):
 
 class InvalidAssetTypeError(Exception):
     pass
+
+
+class UnderageClientError(Exception):
+    pass
+
+
+class ClientNotFoundError(Exception):
+    pass
+
+
+class ClientBlockedError(Exception):
+    pass
+
+
+class AuthenticationError(Exception):
+    pass
+
+
+class NightOperationError(Exception):
+    pass
+
+
+class AccountNotFoundError(Exception):
+    pass
+
+
+class DuplicateClientError(Exception):
+    pass
