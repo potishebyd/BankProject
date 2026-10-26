@@ -1,0 +1,5 @@
+timestamp,type,amount,currency,level,risk,message
+2026-10-28 11:00,TRANSFER,200,USD,WARNING,MEDIUM,Suspicious operation: transfer to a new account
+2026-10-28 11:10,TRANSFER,50,USD,INFO,LOW,Operation accepted
+2026-10-28 11:15,DEPOSIT,300,USD,INFO,LOW,Operation accepted
+2026-10-29 02:20,EXTERNAL,100,USD,CRITICAL,HIGH,"Dangerous operation blocked: transfer to a new account, night operation"

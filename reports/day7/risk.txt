@@ -1,0 +1,19 @@
+Risk report: Horizon Bank
+=========================
+Generated: 2026-10-26T18:07:26
+
+low: 3
+medium: 7
+high: 1
+suspicious: 8
+errors: 2
+
+timestamp | actor | risk | level | message
+2026-10-28 11:00 | Anna Petrova | MEDIUM | WARNING | Suspicious operation: transfer to a new account
+2026-10-28 11:05 | Boris Orlov | MEDIUM | WARNING | Suspicious operation: transfer to a new account
+2026-10-28 12:00 | Clara Kim | MEDIUM | WARNING | Suspicious operation: transfer to a new account
+2026-10-28 12:04 | Clara Kim | MEDIUM | WARNING | Suspicious operation: frequent operations
+2026-10-28 13:00 | Boris Orlov | MEDIUM | WARNING | Suspicious operation: large amount
+2026-10-28 14:00 | Dmitry Volkov | MEDIUM | WARNING | Suspicious operation: transfer to a new account
+2026-10-28 14:10 | Dmitry Volkov | MEDIUM | WARNING | Suspicious operation: large amount
+2026-10-29 02:20 | Anna Petrova | HIGH | CRITICAL | Dangerous operation blocked: transfer to a new account, night operation

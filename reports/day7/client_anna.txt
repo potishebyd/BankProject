@@ -1,0 +1,22 @@
+Client report: Anna Petrova
+===========================
+Generated: 2026-10-26T18:07:26
+
+client: Anna Petrova
+status: SUSPICIOUS
+accounts: 1
+balances: USD: 5630.0
+operations: 4
+risk_level: HIGH
+low: 2
+medium: 1
+high: 1
+
+Accounts:
+  88235892 BankAccount ACTIVE 5630.0 USD
+
+timestamp | type | amount | currency | level | risk | message
+2026-10-28 11:00 | TRANSFER | 200 | USD | WARNING | MEDIUM | Suspicious operation: transfer to a new account
+2026-10-28 11:10 | TRANSFER | 50 | USD | INFO | LOW | Operation accepted
+2026-10-28 11:15 | DEPOSIT | 300 | USD | INFO | LOW | Operation accepted
+2026-10-29 02:20 | EXTERNAL | 100 | USD | CRITICAL | HIGH | Dangerous operation blocked: transfer to a new account, night operation

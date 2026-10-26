@@ -1,0 +1,70 @@
+{
+  "report_type": "risk",
+  "title": "Risk report: Horizon Bank",
+  "generated_at": "2026-10-26T18:07:26",
+  "summary": {
+    "low": 3,
+    "medium": 7,
+    "high": 1,
+    "suspicious": 8,
+    "errors": 2
+  },
+  "rows": [
+    {
+      "timestamp": "2026-10-28 11:00",
+      "actor": "Anna Petrova",
+      "risk": "MEDIUM",
+      "level": "WARNING",
+      "message": "Suspicious operation: transfer to a new account"
+    },
+    {
+      "timestamp": "2026-10-28 11:05",
+      "actor": "Boris Orlov",
+      "risk": "MEDIUM",
+      "level": "WARNING",
+      "message": "Suspicious operation: transfer to a new account"
+    },
+    {
+      "timestamp": "2026-10-28 12:00",
+      "actor": "Clara Kim",
+      "risk": "MEDIUM",
+      "level": "WARNING",
+      "message": "Suspicious operation: transfer to a new account"
+    },
+    {
+      "timestamp": "2026-10-28 12:04",
+      "actor": "Clara Kim",
+      "risk": "MEDIUM",
+      "level": "WARNING",
+      "message": "Suspicious operation: frequent operations"
+    },
+    {
+      "timestamp": "2026-10-28 13:00",
+      "actor": "Boris Orlov",
+      "risk": "MEDIUM",
+      "level": "WARNING",
+      "message": "Suspicious operation: large amount"
+    },
+    {
+      "timestamp": "2026-10-28 14:00",
+      "actor": "Dmitry Volkov",
+      "risk": "MEDIUM",
+      "level": "WARNING",
+      "message": "Suspicious operation: transfer to a new account"
+    },
+    {
+      "timestamp": "2026-10-28 14:10",
+      "actor": "Dmitry Volkov",
+      "risk": "MEDIUM",
+      "level": "WARNING",
+      "message": "Suspicious operation: large amount"
+    },
+    {
+      "timestamp": "2026-10-29 02:20",
+      "actor": "Anna Petrova",
+      "risk": "HIGH",
+      "level": "CRITICAL",
+      "message": "Dangerous operation blocked: transfer to a new account, night operation"
+    }
+  ]
+}

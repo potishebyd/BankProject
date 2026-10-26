@@ -1,0 +1,63 @@
+{
+  "report_type": "client",
+  "title": "Client report: Anna Petrova",
+  "generated_at": "2026-10-26T18:07:26",
+  "summary": {
+    "client": "Anna Petrova",
+    "status": "SUSPICIOUS",
+    "accounts": 1,
+    "balances": "USD: 5630.0",
+    "operations": 4,
+    "risk_level": "HIGH",
+    "low": 2,
+    "medium": 1,
+    "high": 1
+  },
+  "accounts": [
+    {
+      "account_id": "88235892",
+      "type": "BankAccount",
+      "status": "ACTIVE",
+      "balance": 5630.0,
+      "currency": "USD"
+    }
+  ],
+  "rows": [
+    {
+      "timestamp": "2026-10-28 11:00",
+      "type": "TRANSFER",
+      "amount": 200,
+      "currency": "USD",
+      "level": "WARNING",
+      "risk": "MEDIUM",
+      "message": "Suspicious operation: transfer to a new account"
+    },
+    {
+      "timestamp": "2026-10-28 11:10",
+      "type": "TRANSFER",
+      "amount": 50,
+      "currency": "USD",
+      "level": "INFO",
+      "risk": "LOW",
+      "message": "Operation accepted"
+    },
+    {
+      "timestamp": "2026-10-28 11:15",
+      "type": "DEPOSIT",
+      "amount": 300,
+      "currency": "USD",
+      "level": "INFO",
+      "risk": "LOW",
+      "message": "Operation accepted"
+    },
+    {
+      "timestamp": "2026-10-29 02:20",
+      "type": "EXTERNAL",
+      "amount": 100,
+      "currency": "USD",
+      "level": "CRITICAL",
+      "risk": "HIGH",
+      "message": "Dangerous operation blocked: transfer to a new account, night operation"
+    }
+  ]
+}

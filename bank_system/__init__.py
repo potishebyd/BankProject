@@ -33,6 +33,7 @@ from .core import (
     TransactionType,
     UnderageClientError,
 )
+from .reports import ReportBuilder
 from .transactions import Transaction, TransactionProcessor, TransactionQueue
 
 __all__ = [
@@ -62,6 +63,7 @@ __all__ = [
     "NightOperationError",
     "OverdraftLimitError",
     "PremiumAccount",
+    "ReportBuilder",
     "RiskAnalyzer",
     "RiskAssessment",
     "RiskLevel",

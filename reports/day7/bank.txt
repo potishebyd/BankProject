@@ -1,0 +1,16 @@
+Bank report: Horizon Bank
+=========================
+Generated: 2026-10-26T18:07:26
+
+bank: Horizon Bank
+clients: 4
+accounts: 4
+balances: USD: 9800.0
+operations: 11
+suspicious: 8
+
+client | status | total_balance | accounts
+Anna Petrova | SUSPICIOUS | 5630.0 | 1
+Clara Kim | ACTIVE | 1880.0 | 1
+Boris Orlov | ACTIVE | 1700.0 | 1
+Dmitry Volkov | ACTIVE | 590.0 | 1
