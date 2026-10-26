@@ -1,5 +1,6 @@
 from .audit import run as run_audit
 from .bank_account import run as run_bank_account
+from .day6 import run as run_day6
 from .banking import run as run_banking
 from .investment_account import run as run_investment_account
 from .premium_account import run as run_premium_account
@@ -15,12 +16,14 @@ def main():
     run_banking()
     run_transactions()
     run_audit()
+    run_day6()
 
 
 __all__ = [
     "main",
     "run_audit",
     "run_bank_account",
+    "run_day6",
     "run_banking",
     "run_investment_account",
     "run_premium_account",
