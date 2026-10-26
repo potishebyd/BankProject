@@ -36,3 +36,16 @@ class TransactionStatus(enum.Enum):
     completed = "COMPLETED"
     failed = "FAILED"
     cancelled = "CANCELLED"
+
+
+class AuditLevel(enum.Enum):
+    info = "INFO"
+    warning = "WARNING"
+    error = "ERROR"
+    critical = "CRITICAL"
+
+
+class RiskLevel(enum.Enum):
+    low = "LOW"
+    medium = "MEDIUM"
+    high = "HIGH"

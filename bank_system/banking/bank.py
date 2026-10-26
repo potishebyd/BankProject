@@ -1,13 +1,15 @@
 from datetime import datetime
 
 from ..accounts.bank_account import BankAccount
-from ..core.enums import AccountStatus, Currency
+from ..audit.risk_analyzer import RiskAnalyzer
+from ..core.enums import AccountStatus, AuditLevel, Currency, RiskLevel
 from ..core.exceptions import (
     AccountNotFoundError,
     AuthenticationError,
     ClientBlockedError,
     ClientNotFoundError,
     DuplicateClientError,
+    HighRiskError,
     InvalidOperationError,
     NightOperationError,
 )
@@ -18,15 +20,26 @@ class Bank:
     NIGHT_START_HOUR = 0
     NIGHT_END_HOUR = 5
 
-    def __init__(self, name: str = "Bank", now_func=datetime.now):
+    def __init__(
+        self,
+        name: str = "Bank",
+        now_func=datetime.now,
+        audit_log=None,
+        risk_analyzer: RiskAnalyzer | None = None,
+    ):
         if not isinstance(name, str) or not name.strip():
             raise ValueError("Incorrect bank name")
+
+        if risk_analyzer is not None and not isinstance(risk_analyzer, RiskAnalyzer):
+            raise ValueError("Incorrect risk analyzer")
 
         self._name = name.strip()
         self._now = now_func
         self._clients: dict[str, Client] = {}
         self._accounts: dict[str, BankAccount] = {}
         self._suspicious_actions: list[dict] = []
+        self._audit_log = audit_log
+        self._risk_analyzer = risk_analyzer
 
     @property
     def name(self):
@@ -260,3 +273,101 @@ class Bank:
 
         ranking.sort(key=lambda item: item["total_balance"], reverse=True)
         return ranking
+
+    def review_transaction(self, transaction):
+        if self._risk_analyzer is None:
+            return None
+
+        now = self._now()
+        assessment = self._risk_analyzer.analyze(transaction, now)
+        self._risk_analyzer.observe(transaction, now)
+        actor, account_id = self._transaction_actor(transaction)
+
+        if assessment.level == RiskLevel.high:
+            audit_level = AuditLevel.critical
+            message = "Dangerous operation blocked: " + ", ".join(assessment.reasons)
+        elif assessment.level == RiskLevel.medium:
+            audit_level = AuditLevel.warning
+            message = "Suspicious operation: " + ", ".join(assessment.reasons)
+        else:
+            audit_level = AuditLevel.info
+            message = "Operation accepted"
+
+        self._write_audit(
+            audit_level,
+            message,
+            transaction,
+            actor,
+            account_id,
+            risk=assessment.level,
+            reasons=assessment.reasons,
+        )
+
+        if assessment.level == RiskLevel.high:
+            self._mark_suspicious(
+                message,
+                self._client_id_for_account(account_id),
+            )
+            raise HighRiskError(message)
+
+        return assessment
+
+    def confirm_transaction(self, transaction):
+        if self._risk_analyzer is not None:
+            self._risk_analyzer.confirm(transaction)
+
+    def record_failure(self, transaction, error):
+        if isinstance(error, HighRiskError):
+            return
+
+        actor, account_id = self._transaction_actor(transaction)
+        self._write_audit(
+            AuditLevel.error,
+            str(error),
+            transaction,
+            actor,
+            account_id,
+        )
+
+    def _write_audit(
+        self,
+        level,
+        message,
+        transaction,
+        actor,
+        account_id,
+        risk=None,
+        reasons=None,
+    ):
+        if self._audit_log is None:
+            return
+
+        self._audit_log.record(
+            level,
+            message,
+            actor=actor,
+            account_id=account_id,
+            transaction_id=transaction.transaction_id,
+            transaction_type=transaction.type.value,
+            amount=transaction.amount,
+            currency=transaction.currency.value,
+            risk=risk,
+            reasons=reasons,
+        )
+
+    @staticmethod
+    def _transaction_actor(transaction):
+        account = transaction.sender or transaction.recipient
+        if account is None:
+            return None, None
+        return account._owner_data, account._account_id
+
+    def _client_id_for_account(self, account_id: str | None):
+        if account_id is None:
+            return None
+
+        for client in self._clients.values():
+            if account_id in client.account_numbers:
+                return client.client_id
+
+        return None

@@ -1,3 +1,4 @@
+from .audit import run as run_audit
 from .bank_account import run as run_bank_account
 from .banking import run as run_banking
 from .investment_account import run as run_investment_account
@@ -13,10 +14,12 @@ def main():
     run_investment_account()
     run_banking()
     run_transactions()
+    run_audit()
 
 
 __all__ = [
     "main",
+    "run_audit",
     "run_bank_account",
     "run_banking",
     "run_investment_account",

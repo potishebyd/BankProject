@@ -60,3 +60,7 @@ class DuplicateClientError(Exception):
 
 class TransactionNotFoundError(Exception):
     pass
+
+
+class HighRiskError(Exception):
+    pass

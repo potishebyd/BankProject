@@ -3,7 +3,7 @@ from datetime import datetime
 from ..accounts.bank_account import BankAccount
 from ..accounts.premium_account import PremiumAccount
 from ..core.enums import Currency, TransactionType
-from ..core.exceptions import InvalidOperationError
+from ..core.exceptions import HighRiskError, InvalidOperationError
 from .transaction import Transaction
 from .transaction_queue import TransactionQueue
 
@@ -23,6 +23,7 @@ class TransactionProcessor:
         external_commission_rate: int | float = 0.02,
         max_attempts: int = 3,
         now_func=datetime.now,
+        bank=None,
     ):
         self._rates = dict(self.DEFAULT_RATES if rates is None else rates)
         self._validate_rates(self._rates)
@@ -39,6 +40,7 @@ class TransactionProcessor:
         self._external_commission_rate = external_commission_rate
         self._max_attempts = max_attempts
         self._now = now_func
+        self._bank = bank
         self._errors: list[dict] = []
 
     @property
@@ -150,11 +152,17 @@ class TransactionProcessor:
     def _run(self, transaction: Transaction):
         transaction.mark_processing(self._now())
         try:
+            if self._bank is not None:
+                self._bank.review_transaction(transaction)
             commission, converted_amount = self._execute(transaction)
         except Exception as error:
             self._record_error(transaction, error)
+            if self._bank is not None:
+                self._bank.record_failure(transaction, error)
             raise
 
+        if self._bank is not None:
+            self._bank.confirm_transaction(transaction)
         transaction.mark_completed(self._now(), commission, converted_amount)
 
     def process(self, transaction: Transaction) -> Transaction:
@@ -171,6 +179,9 @@ class TransactionProcessor:
 
             try:
                 self._run(transaction)
+            except HighRiskError as error:
+                transaction.mark_failed(str(error), self._now())
+                finished.append(transaction)
             except Exception as error:
                 if transaction.attempts < self._max_attempts:
                     transaction.mark_retry(str(error))
