@@ -3,7 +3,11 @@ from datetime import datetime
 from ..accounts.bank_account import BankAccount
 from ..accounts.premium_account import PremiumAccount
 from ..core.enums import Currency, TransactionType
-from ..core.exceptions import HighRiskError, InvalidOperationError
+from ..core.exceptions import (
+    HighRiskError,
+    InvalidOperationError,
+    NightOperationError,
+)
 from .transaction import Transaction
 from .transaction_queue import TransactionQueue
 
@@ -179,7 +183,7 @@ class TransactionProcessor:
 
             try:
                 self._run(transaction)
-            except HighRiskError as error:
+            except (HighRiskError, NightOperationError) as error:
                 transaction.mark_failed(str(error), self._now())
                 finished.append(transaction)
             except Exception as error:

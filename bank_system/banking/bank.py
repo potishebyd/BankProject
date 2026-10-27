@@ -148,6 +148,7 @@ class Bank:
             currency=currency,
             **account_kwargs,
         )
+        account.bind_clock(self._now)
         self._accounts[account._account_id] = account
         client.add_account_number(account._account_id)
         return account
@@ -275,13 +276,15 @@ class Bank:
         return ranking
 
     def review_transaction(self, transaction):
+        actor, account_id = self._transaction_actor(transaction)
+        client_id = self._client_id_for_account(account_id)
         if self._risk_analyzer is None:
+            self._ensure_business_hours("transaction", client_id)
             return None
 
         now = self._now()
         assessment = self._risk_analyzer.analyze(transaction, now)
         self._risk_analyzer.observe(transaction, now)
-        actor, account_id = self._transaction_actor(transaction)
 
         if assessment.level == RiskLevel.high:
             audit_level = AuditLevel.critical
@@ -304,12 +307,10 @@ class Bank:
         )
 
         if assessment.level == RiskLevel.high:
-            self._mark_suspicious(
-                message,
-                self._client_id_for_account(account_id),
-            )
+            self._mark_suspicious(message, client_id)
             raise HighRiskError(message)
 
+        self._ensure_business_hours("transaction", client_id)
         return assessment
 
     def confirm_transaction(self, transaction):

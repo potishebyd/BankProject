@@ -1,4 +1,5 @@
 import math
+from datetime import datetime
 
 from ..core.enums import AccountStatus, Currency
 from ..core.exceptions import (
@@ -6,11 +7,15 @@ from ..core.exceptions import (
     AccountFrozenError,
     InsufficientFundsError,
     InvalidOperationError,
+    NightOperationError,
 )
 from .abstract_account import AbstractAccount
 
 
 class BankAccount(AbstractAccount):
+    NIGHT_START_HOUR = 0
+    NIGHT_END_HOUR = 5
+
     def __init__(
         self,
         owner_data: str,
@@ -45,6 +50,19 @@ class BankAccount(AbstractAccount):
         )
 
         self._currency = currency
+        self._now = datetime.now
+
+    def bind_clock(self, now_func):
+        if not callable(now_func):
+            raise ValueError("Incorrect clock")
+        self._now = now_func
+
+    def _ensure_business_hours(self):
+        hour = self._now().hour
+        if self.NIGHT_START_HOUR <= hour < self.NIGHT_END_HOUR:
+            raise NightOperationError(
+                "Operations are forbidden from 00:00 to 05:00"
+            )
 
     @staticmethod
     def _validate_amount(amount, message="Incorrect amount"):
@@ -58,6 +76,8 @@ class BankAccount(AbstractAccount):
             raise InvalidOperationError("Amount cannot be negative")
 
     def check_status(self):
+        self._ensure_business_hours()
+
         if self._status == AccountStatus.frozen:
             raise AccountFrozenError("Account is frozen")
 

@@ -1,6 +1,6 @@
 Risk report: Horizon Bank
 =========================
-Generated: 2026-10-26T18:07:26
+Generated: 2026-10-27T17:17:27
 
 low: 3
 medium: 7
